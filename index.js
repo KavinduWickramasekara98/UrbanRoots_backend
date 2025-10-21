@@ -11,7 +11,13 @@ app.use(cors());
 app.use(bodyParser.json());
 
 // Initialize Firebase Admin (using service account from env var)
-const serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT || '{}');
+let serviceAccount;
+try {
+  serviceAccount = JSON.parse(process.env.FIREBASE_SERVICE_ACCOUNT || "{}");
+} catch (error) {
+  console.error("Error parsing FIREBASE_SERVICE_ACCOUNT:", error.message);
+  throw new Error("Invalid Firebase service account configuration");
+}
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount),
 });
